@@ -8,14 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var viewModel = UserViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            List(viewModel.users) { user in
+                NavigationLink {
+                    UserDetailsView(user: user)
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(user.name)
+                            .font(.headline)
+                        Text(user.isActive ? "Active" : "Inactive")
+                            .foregroundStyle(user.isActive ? .green : .red)
+                    }
+                }
+            }
+            .navigationTitle("Users")
+            .onAppear {
+                viewModel.fetchUsers()
+            }
         }
-        .padding()
     }
 }
 
